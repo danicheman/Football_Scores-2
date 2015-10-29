@@ -1,6 +1,7 @@
 package barqsoft.footballscores.service;
 
 import android.app.IntentService;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -22,8 +23,8 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.Vector;
 
-import barqsoft.footballscores.data.DatabaseContract;
 import barqsoft.footballscores.R;
+import barqsoft.footballscores.data.DatabaseContract;
 
 /**
  * Created by yehya khaled on 3/2/2015.
@@ -272,6 +273,17 @@ public class myFetchService extends IntentService
             Log.e(LOG_TAG,e.getMessage());
         }
 
+    }
+
+    //recieve a timed event and launch the service, passing recieved data to it.
+    static public class AlarmReciever extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent sendIntent = new Intent(context, myFetchService.class);
+            //pass extra value from received intent to service-launching intent
+            //sendIntent.putExtra( Var name, intent.getStringExtra(Var name));
+            context.startService(sendIntent);
+        }
     }
 }
 

@@ -16,4 +16,5 @@
     android:initialLayout="@layout/shortcut_widget"
     android:minHeight="@dimen/widget_shortcut_default_height"
     android:minWidth="@dimen/widget_shortcut_default_width"
+    android:previewImage="@drawable/ic_launcher"
     android:updatePeriodMillis="0" />

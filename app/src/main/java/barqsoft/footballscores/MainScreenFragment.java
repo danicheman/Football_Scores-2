@@ -1,5 +1,8 @@
 package barqsoft.footballscores;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -33,7 +36,9 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     private void update_scores()
     {
         Intent service_start = new Intent(getActivity(), myFetchService.class);
-        getActivity().startService(service_start);
+        /*getActivity().startService(service_start);*/
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 5000, PendingIntent.getActivity(getActivity(), 123, service_start, 0));
     }
     public void setFragmentDate(String date)
     {

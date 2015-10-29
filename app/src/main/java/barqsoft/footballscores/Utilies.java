@@ -5,11 +5,19 @@ package barqsoft.footballscores;
  */
 public class Utilies
 {
-    public static final int SERIE_A = 357;
-    public static final int PREMIER_LEGAUE = 354;
-    public static final int CHAMPIONS_LEAGUE = 362;
-    public static final int PRIMERA_DIVISION = 358;
-    public static final int BUNDESLIGA = 351;
+    public static final int SERIE_A = 401;
+    public static final int PREMIER_LEGAUE = 398;
+    public static final int CHAMPIONS_LEAGUE = 405;
+    public static final int PRIMERA_DIVISION = 399;
+    public static final int BUNDESLIGA1 = 394;
+    public static final int BUNDESLIGA2 = 395;
+    public static final int BUNDESLIGA3 = 403;
+    public static final int LIGUE1 = 396;
+    public static final int LIGUE2 = 397;
+    public static final int SEGUNDA = 400;
+    public static final int EREDIVISIE = 404;
+
+
     public static String getLeague(int league_num)
     {
         switch (league_num)
@@ -18,7 +26,20 @@ public class Utilies
             case PREMIER_LEGAUE : return "Premier League";
             case CHAMPIONS_LEAGUE : return "UEFA Champions League";
             case PRIMERA_DIVISION : return "Primera Division";
-            case BUNDESLIGA : return "Bundesliga";
+            case BUNDESLIGA1:
+                return "Bundesliga 1";
+            case BUNDESLIGA2:
+                return "Bundesliga 2";
+            case BUNDESLIGA3:
+                return "Bundesliga 3";
+            case LIGUE1:
+                return "Ligue 1";
+            case LIGUE2:
+                return "Ligue 2";
+            case SEGUNDA:
+                return "Segunda Division";
+            case EREDIVISIE:
+                return "Eredivisie";
             default: return "Not known League Please report";
         }
     }

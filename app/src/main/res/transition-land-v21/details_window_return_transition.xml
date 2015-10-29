@@ -24,7 +24,7 @@
     </fade>
     <slide android:slideEdge="right">
         <targets>
-            <target android:targetId="@id/detail_additional_pane" />
+            <target android:targetId="@id/scores_list" />
         </targets>
     </slide>
 </transitionSet>
