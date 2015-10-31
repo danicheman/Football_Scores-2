@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import barqsoft.footballscores.data.DatabaseContract;
+import barqsoft.footballscores.service.ScoresSyncAdapter;
 import barqsoft.footballscores.service.myFetchService;
 
 /**
@@ -35,6 +36,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
 
     private void update_scores()
     {
+        ScoresSyncAdapter.syncImmediately(getActivity());
         Intent service_start = new Intent(getActivity(), myFetchService.class);
         /*getActivity().startService(service_start);*/
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);

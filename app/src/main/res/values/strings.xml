@@ -2,7 +2,7 @@
 <resources>
 
     <!-- SyncAdapter variables -->
-    <string translatable="false" name="content_authority">footballscores.barqsoft.com</string>
+    <string translatable="false" name="content_authority">barqsoft.footballscores</string>
     <string translatable="false" name="sync_account_type">com.barqsoft.footballscores.app</string>
 
     <string name="app_name">Football Scores</string>
