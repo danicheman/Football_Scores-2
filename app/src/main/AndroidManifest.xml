@@ -10,7 +10,7 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -31,7 +31,7 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
-            <meta-data
+            <meta-mData
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
@@ -43,7 +43,7 @@
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
-            <meta-data
+            <meta-mData
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
         </service>
@@ -59,7 +59,7 @@
             android:name=".AboutActivity"
             android:label="About"
             android:parentActivityName=".MainActivity" >
-            <meta-data
+            <meta-mData
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="barqsoft.footballscores.MainActivity" />
         </activity>
@@ -77,7 +77,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <meta-data
+            <meta-mData
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info_shortcut" />
         </receiver>

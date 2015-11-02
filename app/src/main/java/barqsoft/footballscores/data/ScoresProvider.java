@@ -7,15 +7,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-
-import barqsoft.footballscores.data.DatabaseContract;
-import barqsoft.footballscores.data.ScoresDBHelper;
+import android.util.Log;
 
 /**
  * Created by yehya khaled on 2/25/2015.
  */
 public class ScoresProvider extends ContentProvider
 {
+    private static final String LOG_TAG = ScoresProvider.class.getSimpleName();
+
     private static ScoresDBHelper mOpenHelper;
     private static final int MATCHES = 100;
     private static final int MATCHES_WITH_LEAGUE = 101;
@@ -24,11 +24,11 @@ public class ScoresProvider extends ContentProvider
     private UriMatcher muriMatcher = buildUriMatcher();
     private static final SQLiteQueryBuilder ScoreQuery =
             new SQLiteQueryBuilder();
-    private static final String SCORES_BY_LEAGUE = DatabaseContract.scores_table.LEAGUE_COL + " = ?";
+    private static final String SCORES_BY_LEAGUE = DatabaseContract.ScoresEntry.LEAGUE_COL + " = ?";
     private static final String SCORES_BY_DATE =
-            DatabaseContract.scores_table.DATE_COL + " LIKE ?";
+            DatabaseContract.ScoresEntry.DATE_COL + " LIKE ?";
     private static final String SCORES_BY_ID =
-            DatabaseContract.scores_table.MATCH_ID + " = ?";
+            DatabaseContract.ScoresEntry.MATCH_ID + " = ?";
 
 
     static UriMatcher buildUriMatcher() {
@@ -48,16 +48,13 @@ public class ScoresProvider extends ContentProvider
            if(link.contentEquals(DatabaseContract.BASE_CONTENT_URI.toString()))
            {
                return MATCHES;
-           }
-           else if(link.contentEquals(DatabaseContract.scores_table.buildScoreWithDate().toString()))
+           } else if (link.contentEquals(DatabaseContract.ScoresEntry.buildScoreWithDate().toString()))
            {
                return MATCHES_WITH_DATE;
-           }
-           else if(link.contentEquals(DatabaseContract.scores_table.buildScoreWithId().toString()))
+           } else if (link.contentEquals(DatabaseContract.ScoresEntry.buildScoreWithId().toString()))
            {
                return MATCHES_WITH_ID;
-           }
-           else if(link.contentEquals(DatabaseContract.scores_table.buildScoreWithLeague().toString()))
+           } else if (link.contentEquals(DatabaseContract.ScoresEntry.buildScoreWithLeague().toString()))
            {
                return MATCHES_WITH_LEAGUE;
            }
@@ -83,13 +80,13 @@ public class ScoresProvider extends ContentProvider
         final int match = muriMatcher.match(uri);
         switch (match) {
             case MATCHES:
-                return DatabaseContract.scores_table.CONTENT_TYPE;
+                return DatabaseContract.ScoresEntry.CONTENT_TYPE;
             case MATCHES_WITH_LEAGUE:
-                return DatabaseContract.scores_table.CONTENT_TYPE;
+                return DatabaseContract.ScoresEntry.CONTENT_TYPE;
             case MATCHES_WITH_ID:
-                return DatabaseContract.scores_table.CONTENT_ITEM_TYPE;
+                return DatabaseContract.ScoresEntry.CONTENT_ITEM_TYPE;
             case MATCHES_WITH_DATE:
-                return DatabaseContract.scores_table.CONTENT_TYPE;
+                return DatabaseContract.ScoresEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri :" + uri );
         }
@@ -110,8 +107,9 @@ public class ScoresProvider extends ContentProvider
                     DatabaseContract.SCORES_TABLE,
                     projection,null,null,null,null,sortOrder); break;
             case MATCHES_WITH_DATE:
-                    //Log.v(FetchScoreTask.LOG_TAG,selectionArgs[1]);
-                    //Log.v(FetchScoreTask.LOG_TAG,selectionArgs[2]);
+                Log.v(LOG_TAG, "Matches with date");
+                Log.v(LOG_TAG, selectionArgs[1]);
+                Log.v(LOG_TAG, selectionArgs[2]);
                     retCursor = mOpenHelper.getReadableDatabase().query(
                     DatabaseContract.SCORES_TABLE,
                     projection,SCORES_BY_DATE,selectionArgs,null,null,sortOrder); break;

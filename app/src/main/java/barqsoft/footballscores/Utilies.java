@@ -1,5 +1,8 @@
 package barqsoft.footballscores;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 /**
  * Created by yehya khaled on 3/3/2015.
  */
@@ -16,7 +19,8 @@ public class Utilies
     public static final int LIGUE2 = 397;
     public static final int SEGUNDA = 400;
     public static final int EREDIVISIE = 404;
-
+    public static final String FOOTBALL_SCORES = "footballScores";
+    public static final String LAST_UPDATED = "scoreLastUpdated";
 
     public static String getLeague(int league_num)
     {
@@ -104,5 +108,10 @@ public class Utilies
             case "Stoke City FC" : return R.drawable.stoke_city;
             default: return R.drawable.no_icon;
         }
+    }
+
+    public static String getLastUpdated(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(FOOTBALL_SCORES, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(LAST_UPDATED, "");
     }
 }
