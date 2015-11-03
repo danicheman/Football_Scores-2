@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="barqsoft.footballscores" >
+    package="barqsoft.footballscores">
+
 
     <uses-permission
         android:name="android.permission.INTERNET"
@@ -11,6 +13,7 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -51,8 +54,8 @@
 
         <provider
             android:name=".data.ScoresProvider"
-            android:authorities="barqsoft.footballscores"
-            android:exported="false"
+            android:authorities="@string/content_authority"
+            android:exported="true"
             android:syncable="true" />
 
         <activity
@@ -63,9 +66,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="barqsoft.footballscores.MainActivity" />
         </activity>
-        <service android:name=".service.myFetchService" />
+        <!--<service android:name=".service.myFetchService" />-->
         <!-- Run fetch service in a sync service -->
-        <receiver android:name=".service.myFetchService$AlarmReciever" />
+        <!--<receiver android:name=".service.myFetchService$AlarmReciever" />-->
         <service
             android:name=".widget.CollectionRemoteViewsService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />

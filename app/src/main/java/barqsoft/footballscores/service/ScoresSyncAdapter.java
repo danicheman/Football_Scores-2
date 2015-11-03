@@ -39,7 +39,7 @@ import barqsoft.footballscores.data.DatabaseContract;
  */
 public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
 
-    public final String LOG_TAG = ScoresSyncAdapter.class.getSimpleName();
+    private static final String LOG_TAG = ScoresSyncAdapter.class.getSimpleName();
     public static final String ACTION_DATA_UPDATED =
             "barqsoft.footballscores.ACTION_DATA_UPDATED";
 
@@ -264,7 +264,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
             saveScores(values, context);
-            //Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
+
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage());
         }
@@ -285,6 +285,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
         scores.toArray(insert_data);
         insertedRowCount = context.getContentResolver().bulkInsert(
                 DatabaseContract.BASE_CONTENT_URI, insert_data);
+        Log.v(LOG_TAG, "Succesfully Inserted : " + String.valueOf(insertedRowCount));
         return insertedRowCount;
     }
 
@@ -334,6 +335,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
      * @param context The context used to access the account service
      */
     public static void syncImmediately(Context context) {
+        Log.i(LOG_TAG, "sync Immediately!");
         Bundle bundle = new Bundle();
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);

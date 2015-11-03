@@ -16,7 +16,7 @@ public class ScoresProvider extends ContentProvider
 {
     private static final String LOG_TAG = ScoresProvider.class.getSimpleName();
 
-    private static ScoresDBHelper mOpenHelper;
+    private ScoresDBHelper mOpenHelper;
     private static final int MATCHES = 100;
     private static final int MATCHES_WITH_LEAGUE = 101;
     private static final int MATCHES_WITH_ID = 102;
@@ -64,8 +64,9 @@ public class ScoresProvider extends ContentProvider
     @Override
     public boolean onCreate()
     {
+        Log.d(LOG_TAG, "Scores provider on create, should launch the database creation.");
         mOpenHelper = new ScoresDBHelper(getContext());
-        return false;
+        return true;
     }
 
     @Override
@@ -108,8 +109,8 @@ public class ScoresProvider extends ContentProvider
                     projection,null,null,null,null,sortOrder); break;
             case MATCHES_WITH_DATE:
                 Log.v(LOG_TAG, "Matches with date");
-                Log.v(LOG_TAG, selectionArgs[1]);
-                Log.v(LOG_TAG, selectionArgs[2]);
+//                Log.v(LOG_TAG, selectionArgs[1]);
+//                Log.v(LOG_TAG, selectionArgs[2]);
                     retCursor = mOpenHelper.getReadableDatabase().query(
                     DatabaseContract.SCORES_TABLE,
                     projection,SCORES_BY_DATE,selectionArgs,null,null,sortOrder); break;
@@ -137,6 +138,7 @@ public class ScoresProvider extends ContentProvider
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         //db.delete(DatabaseContract.SCORES_TABLE,null,null);
         //Log.v(FetchScoreTask.LOG_TAG,String.valueOf(muriMatcher.match(uri)));
+        Log.d(LOG_TAG, "Requested database, table should exist!!");
         switch (match_uri(uri))
         {
             case MATCHES:

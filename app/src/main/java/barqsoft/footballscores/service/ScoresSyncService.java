@@ -15,7 +15,7 @@ public class ScoresSyncService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d("SunshineSyncService", "onCreate - SunshineSyncService");
+        Log.d("ScoresSyncService", "onCreate - ScoresSyncService");
         synchronized (sSyncAdapterLock) {
             if (sScoresSyncAdapter == null) {
                 sScoresSyncAdapter = new ScoresSyncAdapter(getApplicationContext(), true);
