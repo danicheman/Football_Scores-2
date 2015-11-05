@@ -9,6 +9,7 @@ import android.os.Build;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import barqsoft.footballscores.R;
 import barqsoft.footballscores.Utilies;
 import barqsoft.footballscores.data.DatabaseContract;
 
@@ -18,6 +19,7 @@ import barqsoft.footballscores.data.DatabaseContract;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class CollectionRemoteViewsService extends RemoteViewsService {
 
+    static final int INDEX_ID = 0;
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new RemoteViewsFactory() {
@@ -45,7 +47,10 @@ public class CollectionRemoteViewsService extends RemoteViewsService {
 
             @Override
             public void onDestroy() {
-
+                if (mData != null) {
+                    mData.close();
+                    mData = null;
+                }
             }
 
             @Override
@@ -55,27 +60,33 @@ public class CollectionRemoteViewsService extends RemoteViewsService {
 
             @Override
             public RemoteViews getViewAt(int position) {
+
                 return null;
             }
 
             @Override
             public RemoteViews getLoadingView() {
-                return null;
+
+                return new RemoteViews(getPackageName(), R.layout.widget_list_item);
             }
 
             @Override
             public int getViewTypeCount() {
-                return 0;
+                return 1;
             }
 
             @Override
             public long getItemId(int position) {
-                return 0;
+
+                if (mData.moveToPosition(position)) {
+                    return mData.getLong(INDEX_ID);
+                }
+                return position;
             }
 
             @Override
             public boolean hasStableIds() {
-                return false;
+                return true;
             }
         };
     }

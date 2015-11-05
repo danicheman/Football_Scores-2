@@ -19,6 +19,8 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+        <!-- Main activity -->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
@@ -51,7 +53,7 @@
                 android:resource="@xml/syncadapter" />
         </service>
 
-
+        <!-- Provider -->
         <provider
             android:name=".data.ScoresProvider"
             android:authorities="@string/content_authority"
@@ -69,8 +71,12 @@
         <!--<service android:name=".service.myFetchService" />-->
         <!-- Run fetch service in a sync service -->
         <!--<receiver android:name=".service.myFetchService$AlarmReciever" />-->
+
+        <!--collection widget -->
         <service
             android:name=".widget.CollectionRemoteViewsService"
+            android:enabled="true"
+            android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <!-- Shortcut Widget appWidget provider first-->

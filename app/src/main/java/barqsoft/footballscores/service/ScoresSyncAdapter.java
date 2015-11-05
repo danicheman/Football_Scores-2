@@ -123,6 +123,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
                 if (matches.length() == 0) {
                     //if there is no data, call the function on dummy data
                     //this is expected behavior during the off season.
+                    Log.d(LOG_TAG, "Using dummy data");
                     processJSONdata(getContext().getString(R.string.dummy_data), getContext(), false);
                     return;
                 }
