@@ -7,6 +7,7 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.net.Uri;
@@ -56,8 +57,24 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
     //network code goes heeeere
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        getData("n2");
-        getData("p2");
+
+        //protect the api, don't sync more frequently than 5 minutes at a time.
+        long currentTimeMinutes = System.currentTimeMillis() / 1000 / 60;
+        SharedPreferences sp = getContext().getSharedPreferences("lastSync", Context.MODE_PRIVATE);
+
+        long lastSyncMinutes = sp.getLong("lastSync", 0);
+
+        if (lastSyncMinutes == 0 || lastSyncMinutes < (currentTimeMinutes - 5)) {
+            Log.d(LOG_TAG, "doing sync." + lastSyncMinutes + " and current time is " + currentTimeMinutes);
+            getData("n2");
+            getData("p2");
+        } else {
+            Log.d(LOG_TAG, "Last sync was " + lastSyncMinutes + " and current time is " + currentTimeMinutes);
+        }
+
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putLong("lastSync", currentTimeMinutes);
+        editor.commit();
 
     }
 
