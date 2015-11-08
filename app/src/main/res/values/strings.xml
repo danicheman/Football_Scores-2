@@ -5,6 +5,8 @@
     <string translatable="false" name="sync_account_type">barqsoft.footballscores</string>
     <string translatable="false" name="content_authority">barqsoft.footballscores.service</string>
 
+    <string name="title_widget_collection">Football Scores List</string>
+
     <string name="app_name">Football Scores</string>
     <string name="shortcut_widget">Football Scores Simple Widget</string>
     <string name="hello_world">Hello world!</string>

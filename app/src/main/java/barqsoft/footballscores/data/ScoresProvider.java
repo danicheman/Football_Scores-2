@@ -21,6 +21,7 @@ public class ScoresProvider extends ContentProvider
     private static final int MATCHES_WITH_LEAGUE = 101;
     private static final int MATCHES_WITH_ID = 102;
     private static final int MATCHES_WITH_DATE = 103;
+    private static final int MATCHES_WITH_DAY = 104;
     private UriMatcher muriMatcher = buildUriMatcher();
     private static final SQLiteQueryBuilder ScoreQuery =
             new SQLiteQueryBuilder();
@@ -38,6 +39,7 @@ public class ScoresProvider extends ContentProvider
         matcher.addURI(authority, "league" , MATCHES_WITH_LEAGUE);
         matcher.addURI(authority, "id" , MATCHES_WITH_ID);
         matcher.addURI(authority, "date" , MATCHES_WITH_DATE);
+        matcher.addURI(authority, "date/#", MATCHES_WITH_DAY);
         return matcher;
     }
 
@@ -57,6 +59,8 @@ public class ScoresProvider extends ContentProvider
            } else if (link.contentEquals(DatabaseContract.ScoresEntry.buildScoreWithLeague().toString()))
            {
                return MATCHES_WITH_LEAGUE;
+           } else if (link.contentEquals(DatabaseContract.ScoresEntry.buildScoreWithDateToday().toString())) {
+               return MATCHES_WITH_DAY;
            }
         }
         return -1;
@@ -88,6 +92,8 @@ public class ScoresProvider extends ContentProvider
                 return DatabaseContract.ScoresEntry.CONTENT_ITEM_TYPE;
             case MATCHES_WITH_DATE:
                 return DatabaseContract.ScoresEntry.CONTENT_TYPE;
+            case MATCHES_WITH_DAY:
+                return DatabaseContract.ScoresEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri :" + uri );
         }
@@ -108,19 +114,30 @@ public class ScoresProvider extends ContentProvider
                     DatabaseContract.SCORES_TABLE,
                     projection,null,null,null,null,sortOrder); break;
             case MATCHES_WITH_DATE:
-                Log.v(LOG_TAG, "Matches with date");
-//                Log.v(LOG_TAG, selectionArgs[1]);
-//                Log.v(LOG_TAG, selectionArgs[2]);
-                    retCursor = mOpenHelper.getReadableDatabase().query(
+
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        DatabaseContract.SCORES_TABLE,
+                        projection, SCORES_BY_DATE, selectionArgs, null, null, sortOrder);
+                break;
+            case MATCHES_WITH_ID:
+                retCursor = mOpenHelper.getReadableDatabase().query(
                     DatabaseContract.SCORES_TABLE,
-                    projection,SCORES_BY_DATE,selectionArgs,null,null,sortOrder); break;
-            case MATCHES_WITH_ID: retCursor = mOpenHelper.getReadableDatabase().query(
-                    DatabaseContract.SCORES_TABLE,
-                    projection,SCORES_BY_ID,selectionArgs,null,null,sortOrder); break;
+                        projection, SCORES_BY_ID, selectionArgs, null, null, sortOrder);
+                break;
             case MATCHES_WITH_LEAGUE: retCursor = mOpenHelper.getReadableDatabase().query(
                     DatabaseContract.SCORES_TABLE,
-                    projection,SCORES_BY_LEAGUE,selectionArgs,null,null,sortOrder); break;
-            default: throw new UnsupportedOperationException("Unknown Uri" + uri);
+                    projection, SCORES_BY_LEAGUE, selectionArgs, null, null, sortOrder);
+                break;
+            case MATCHES_WITH_DAY:
+                //get date value out of uri
+                String date = uri.getLastPathSegment();
+                String[] dateArray = {date};
+                retCursor = mOpenHelper.getReadableDatabase().query(
+                        DatabaseContract.SCORES_TABLE,
+                        projection, SCORES_BY_DATE, dateArray, null, null, sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
         retCursor.setNotificationUri(getContext().getContentResolver(),uri);
         return retCursor;
@@ -138,7 +155,7 @@ public class ScoresProvider extends ContentProvider
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         //db.delete(DatabaseContract.SCORES_TABLE,null,null);
         //Log.v(FetchScoreTask.LOG_TAG,String.valueOf(muriMatcher.match(uri)));
-        Log.d(LOG_TAG, "Requested database, table should exist!!");
+
         switch (match_uri(uri))
         {
             case MATCHES:

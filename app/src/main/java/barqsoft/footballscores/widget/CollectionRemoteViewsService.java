@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
+import android.util.Log;
+import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -19,7 +21,24 @@ import barqsoft.footballscores.data.DatabaseContract;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class CollectionRemoteViewsService extends RemoteViewsService {
 
+    static final String LOG_TAG = CollectionRemoteViewsService.class.getSimpleName();
+
+    //default row order from table
     static final int INDEX_ID = 0;
+    static final int DATE_COL = 1;
+    static final int TIME_COL = 2;
+    static final int HOME_COL = 3;
+    static final int AWAY_COL = 4;
+    static final int LEAGUE_COL = 5;
+    static final int HOME_GOALS_COL = 6;
+    static final int AWAY_GOALS_COL = 7;
+    static final int MATCH_ID = 8;
+    static final int MATCH_DAY = 9;
+
+    // not putting all columns here because we'll get all from the table
+
+
+
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         return new RemoteViewsFactory() {
@@ -43,6 +62,7 @@ public class CollectionRemoteViewsService extends RemoteViewsService {
                 Uri scoresForTodayUri = DatabaseContract.ScoresEntry.buildScoreWithDateToday();
 
                 mData = getContentResolver().query(scoresForTodayUri, null, null, null, null);
+                Binder.restoreCallingIdentity(identityToken);
             }
 
             @Override
@@ -60,8 +80,20 @@ public class CollectionRemoteViewsService extends RemoteViewsService {
 
             @Override
             public RemoteViews getViewAt(int position) {
+                if (position == AdapterView.INVALID_POSITION ||
+                        mData == null || !mData.moveToPosition(position)) {
+                    Log.d(LOG_TAG, "getViewAt returning null; invalid position, empty data, or empty data at position " + position);
+                    return null;
+                }
 
-                return null;
+                RemoteViews views = new RemoteViews(getPackageName(),
+                        R.layout.widget_list_item);
+
+                //todo: Continue Here!
+                //build the view for the collection widget
+                //int
+
+                return views;
             }
 
             @Override

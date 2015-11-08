@@ -72,12 +72,7 @@
         <!-- Run fetch service in a sync service -->
         <!--<receiver android:name=".service.myFetchService$AlarmReciever" />-->
 
-        <!--collection widget -->
-        <service
-            android:name=".widget.CollectionRemoteViewsService"
-            android:enabled="true"
-            android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
 
         <!-- Shortcut Widget appWidget provider first-->
         <receiver
@@ -90,7 +85,25 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info_shortcut" />
         </receiver>
-
+        <!-- Collection widget reciever -->
+        <receiver
+            android:name=".widget.CollectionProvider"
+            android:label="@string/title_widget_collection"
+            android:enabled="@bool/widget_detail_enabled">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.android.sunshine.app.ACTION_DATA_UPDATED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_detail" />
+        </receiver>
+        <!--collection widget -->
+        <service
+            android:name=".widget.CollectionRemoteViewsService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 

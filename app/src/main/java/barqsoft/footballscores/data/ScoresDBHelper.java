@@ -17,17 +17,17 @@ public class ScoresDBHelper extends SQLiteOpenHelper
     private static final int DATABASE_VERSION = 3;
 
     private static final String SQL_CREATE_ENTRIES = "CREATE TABLE " + DatabaseContract.SCORES_TABLE + " ("
-            + DatabaseContract.ScoresEntry._ID + " INTEGER PRIMARY KEY,"
-            + DatabaseContract.ScoresEntry.DATE_COL + " TEXT NOT NULL,"
-            + DatabaseContract.ScoresEntry.TIME_COL + " INTEGER NOT NULL,"
-            + DatabaseContract.ScoresEntry.HOME_COL + " TEXT NOT NULL,"
-            + DatabaseContract.ScoresEntry.AWAY_COL + " TEXT NOT NULL,"
-            + DatabaseContract.ScoresEntry.LEAGUE_COL + " INTEGER NOT NULL,"
-            + DatabaseContract.ScoresEntry.HOME_GOALS_COL + " TEXT NOT NULL,"
+            + ScoresEntry._ID + " INTEGER PRIMARY KEY,"
+            + ScoresEntry.DATE_COL + " TEXT NOT NULL,"
+            + ScoresEntry.TIME_COL + " INTEGER NOT NULL,"
+            + ScoresEntry.HOME_COL + " TEXT NOT NULL,"
+            + ScoresEntry.AWAY_COL + " TEXT NOT NULL,"
+            + ScoresEntry.LEAGUE_COL + " INTEGER NOT NULL,"
+            + ScoresEntry.HOME_GOALS_COL + " TEXT NOT NULL,"
             + ScoresEntry.AWAY_GOALS_COL + " TEXT NOT NULL,"
-            + DatabaseContract.ScoresEntry.MATCH_ID + " INTEGER NOT NULL,"
-            + DatabaseContract.ScoresEntry.MATCH_DAY + " INTEGER NOT NULL,"
-            + " UNIQUE (" + DatabaseContract.ScoresEntry.MATCH_ID + ") ON CONFLICT REPLACE"
+            + ScoresEntry.MATCH_ID + " INTEGER NOT NULL,"
+            + ScoresEntry.MATCH_DAY + " INTEGER NOT NULL,"
+            + " UNIQUE (" + ScoresEntry.MATCH_ID + ") ON CONFLICT REPLACE"
             + " );";
 
     public ScoresDBHelper(Context context)
