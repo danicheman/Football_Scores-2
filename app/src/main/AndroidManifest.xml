@@ -57,7 +57,7 @@
         <provider
             android:name=".data.ScoresProvider"
             android:authorities="@string/content_authority"
-            android:exported="true"
+            android:exported="false"
             android:syncable="true" />
 
         <activity

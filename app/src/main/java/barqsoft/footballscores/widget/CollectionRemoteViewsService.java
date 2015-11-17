@@ -11,6 +11,8 @@ import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
+import java.util.Arrays;
+
 import barqsoft.footballscores.R;
 import barqsoft.footballscores.Utilies;
 import barqsoft.footballscores.data.DatabaseContract;
@@ -89,9 +91,11 @@ public class CollectionRemoteViewsService extends RemoteViewsService {
                 RemoteViews views = new RemoteViews(getPackageName(),
                         R.layout.widget_list_item);
 
-                //todo: Continue Here!
+                //todo: Continue Here! Why does this not get called?
                 //build the view for the collection widget
-                //int
+                //id,date,time,home,away,league,home goals, away goals, match id, match day
+                Log.e(LOG_TAG, "Columns: " + Arrays.toString(mData.getColumnNames()));
+                Log.e(LOG_TAG, "Row count:" + mData.getCount());
 
                 return views;
             }
