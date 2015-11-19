@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="barqsoft.footballscores">
-
 
     <uses-permission
         android:name="android.permission.INTERNET"
@@ -36,6 +34,7 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
@@ -48,6 +47,7 @@
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
@@ -68,19 +68,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="barqsoft.footballscores.MainActivity" />
         </activity>
-        <!--<service android:name=".service.myFetchService" />-->
+        <!-- <service android:name=".service.myFetchService" /> -->
         <!-- Run fetch service in a sync service -->
-        <!--<receiver android:name=".service.myFetchService$AlarmReciever" />-->
+        <!-- <receiver android:name=".service.myFetchService$AlarmReciever" /> -->
 
 
-
-        <!-- Shortcut Widget appWidget provider first-->
+        <!-- Shortcut Widget appWidget provider first -->
         <receiver
             android:name=".widget.ShortcutWidget"
             android:label="@string/shortcut_widget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info_shortcut" />
@@ -88,23 +88,26 @@
         <!-- Collection widget reciever -->
         <receiver
             android:name=".widget.CollectionProvider"
-            android:label="@string/title_widget_collection"
-            android:enabled="@bool/widget_detail_enabled">
+            android:enabled="@bool/widget_detail_enabled"
+            android:label="@string/title_widget_collection">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.example.android.sunshine.app.ACTION_DATA_UPDATED" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info_detail" />
         </receiver>
-        <!--collection widget -->
+        <!-- collection widget -->
         <service
             android:name=".widget.CollectionRemoteViewsService"
             android:enabled="true"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+        <service
+            android:name=".widget.CollectionIntentService"
+            android:exported="false"></service>
     </application>
-
 
 </manifest>

@@ -23,7 +23,9 @@ import barqsoft.footballscores.service.ScoresSyncAdapter;
 public class CollectionProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        //todo: call an intent service here..
         for (int appWidgetId : appWidgetIds) {
+
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_list);
 
             // Create an Intent to launch MainActivity

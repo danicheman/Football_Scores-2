@@ -129,12 +129,15 @@ public class ScoresProvider extends ContentProvider
                     projection, SCORES_BY_LEAGUE, selectionArgs, null, null, sortOrder);
                 break;
             case MATCHES_WITH_DAY:
+                Log.v(LOG_TAG, "Matches with day matched in select, getting 5 latest matches");
                 //get date value out of uri
-                String date = uri.getLastPathSegment();
+                /*String date = uri.getLastPathSegment();
                 String[] dateArray = {date};
+
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         DatabaseContract.SCORES_TABLE,
-                        projection, SCORES_BY_DATE, dateArray, null, null, sortOrder);
+                        projection, SCORES_BY_DATE, dateArray, null, null, sortOrder);*/
+                retCursor = mOpenHelper.getReadableDatabase().query(DatabaseContract.SCORES_TABLE,null,null,null,null,null,"_id desc", "5");
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
@@ -172,6 +175,8 @@ public class ScoresProvider extends ContentProvider
                             returncount++;
                         }
                     }
+                    Log.d(LOG_TAG, "Inserted "+returncount+ " rows");
+                    Log.d(LOG_TAG, "got this many value rows:"+values.length);
                     db.setTransactionSuccessful();
                 } finally {
                     db.endTransaction();
@@ -179,6 +184,7 @@ public class ScoresProvider extends ContentProvider
                 getContext().getContentResolver().notifyChange(uri,null);
                 return returncount;
             default:
+                Log.d(LOG_TAG, "did not match in bulk insert :(");
                 return super.bulkInsert(uri,values);
         }
     }

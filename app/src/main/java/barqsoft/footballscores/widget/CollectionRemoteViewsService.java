@@ -47,6 +47,7 @@ public class CollectionRemoteViewsService extends RemoteViewsService {
             @Override
             public void onCreate() {
                 //nada
+                Log.d(LOG_TAG, "onCreate()");
             }
 
 
@@ -55,13 +56,14 @@ public class CollectionRemoteViewsService extends RemoteViewsService {
                 if (mData != null) {
                     mData.close();
                 }
-
+                Log.d(LOG_TAG, "onDataSetChanged()");
                 //get the last time the widget was updated.
                 final long identityToken = Binder.clearCallingIdentity();
                 String lastUpdated = Utilies.getLastUpdated(CollectionRemoteViewsService.this);
                 Uri scoresForTodayUri = DatabaseContract.ScoresEntry.buildScoreWithDateToday();
 
                 mData = getContentResolver().query(scoresForTodayUri, null, null, null, null);
+                Log.d(LOG_TAG, "Got this many rows from DB: " + mData.getCount());
                 Binder.restoreCallingIdentity(identityToken);
             }
 
@@ -91,8 +93,15 @@ public class CollectionRemoteViewsService extends RemoteViewsService {
 
                 //todo: Continue Here!
                 //build the view for the collection widget
-                //int
+                Log.e(LOG_TAG, "getting a part of the view at position " + position);
+                Log.e(LOG_TAG, "home team is : " + mData.getString(HOME_COL));
 
+                Uri scoresUri = DatabaseContract.ScoresEntry.buildScoreWithDateToday();
+                final Intent fillInIntent = new Intent();
+                fillInIntent.setData(scoresUri);
+                views.setTextViewText(R.id.team1, mData.getString(HOME_COL));
+                views.setTextViewText(R.id.team2, mData.getString(AWAY_COL));
+                views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
                 return views;
             }
 
