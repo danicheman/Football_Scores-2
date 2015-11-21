@@ -243,6 +243,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
                         mDate = mDate.substring(0, mDate.indexOf(":"));
 
                         if (!isReal) {
+                            Log.d(LOG_TAG, "Using dummy data, modifying date");
                             //This if statement changes the dummy data's date to match our current date range.
                             Date fragmentdate = new Date(System.currentTimeMillis() + ((i - 2) * 86400000));
                             SimpleDateFormat mformat = new SimpleDateFormat("yyyy-MM-dd");
@@ -299,12 +300,24 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
      */
     private int saveScores(Vector<ContentValues> scores, Context context) {
         int insertedRowCount = 0;
+
         ContentValues[] insert_data = new ContentValues[scores.size()];
         scores.toArray(insert_data);
         Log.v(LOG_TAG, "should be adding this many rows: " + scores.size());
         insertedRowCount = context.getContentResolver().bulkInsert(
                 DatabaseContract.BASE_CONTENT_URI, insert_data);
         Log.v(LOG_TAG, "Succesfully Inserted : " + insertedRowCount);
+
+        if(insert_data.length > 0) {
+
+            insertedRowCount = context.getContentResolver().bulkInsert(
+                    DatabaseContract.BASE_CONTENT_URI, insert_data);
+            Log.v(LOG_TAG, "Succesfully Inserted : " + insertedRowCount);
+
+        } else {
+            Log.v(LOG_TAG, "No data to insert!!!");
+        }
+
         return insertedRowCount;
     }
 

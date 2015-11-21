@@ -262,10 +262,15 @@ public class myFetchService extends IntentService
             int inserted_data = 0;
             ContentValues[] insert_data = new ContentValues[values.size()];
             values.toArray(insert_data);
-            inserted_data = mContext.getContentResolver().bulkInsert(
-                    DatabaseContract.BASE_CONTENT_URI,insert_data);
+            if(insert_data.length > 0) {
+                inserted_data = mContext.getContentResolver().bulkInsert(
+                        DatabaseContract.BASE_CONTENT_URI,insert_data);
 
-            //Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
+                Log.v(LOG_TAG,"Succesfully Inserted : " + String.valueOf(inserted_data));
+            } else {
+                Log.v(LOG_TAG, "No data to insert!!!");
+            }
+
         }
         catch (JSONException e)
         {

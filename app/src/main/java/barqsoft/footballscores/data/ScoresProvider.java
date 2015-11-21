@@ -166,6 +166,7 @@ public class ScoresProvider extends ContentProvider
                 int returncount = 0;
                 try
                 {
+                    Log.d(LOG_TAG, "BulkInsert - Matches: trying to insert this many rows" + values.length);
                     for(ContentValues value : values)
                     {
                         long _id = db.insertWithOnConflict(DatabaseContract.SCORES_TABLE, null, value,
