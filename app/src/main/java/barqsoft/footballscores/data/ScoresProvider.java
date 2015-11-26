@@ -137,7 +137,7 @@ public class ScoresProvider extends ContentProvider
                 retCursor = mOpenHelper.getReadableDatabase().query(
                         DatabaseContract.SCORES_TABLE,
                         projection, SCORES_BY_DATE, dateArray, null, null, sortOrder);*/
-                retCursor = mOpenHelper.getReadableDatabase().query(DatabaseContract.SCORES_TABLE,null,null,null,null,null,"_id desc", "5");
+                retCursor = mOpenHelper.getReadableDatabase().query(DatabaseContract.SCORES_TABLE,null,null,null,null,null,"_id desc", "10");
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
