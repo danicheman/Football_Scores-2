@@ -22,8 +22,7 @@ import barqsoft.footballscores.data.DatabaseContract;
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class CollectionRemoteViewsService extends RemoteViewsService {
 
-    static final String LOG_TAG = CollectionRemoteViewsService.class.getSimpleName();
-
+    private static final String TAG = "CollectionRemoteViewsService";
     // not putting all columns here because we'll get all from the table
 
 
