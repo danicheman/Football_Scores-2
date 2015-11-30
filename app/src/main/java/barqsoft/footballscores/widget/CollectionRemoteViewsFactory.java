@@ -3,17 +3,19 @@ package barqsoft.footballscores.widget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
 import barqsoft.footballscores.R;
-import barqsoft.footballscores.Utilies;
+import barqsoft.footballscores.Utilites;
 import barqsoft.footballscores.data.DatabaseContract;
 
 /**
@@ -23,7 +25,7 @@ import barqsoft.footballscores.data.DatabaseContract;
 public class CollectionRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private static final String LOG_TAG = CollectionRemoteViewsFactory.class.getSimpleName();
-    private static final String TAG = "CollectionRemoteViewsFactory";
+    private static final String TAG = "CollectionRemoteViews";
     private Cursor mData = null;
     private Context mContext;
 
@@ -61,12 +63,16 @@ public class CollectionRemoteViewsFactory implements RemoteViewsService.RemoteVi
         Log.d(LOG_TAG, "onDataSetChanged()");
         //get the last time the widget was updated.
         final long identityToken = Binder.clearCallingIdentity();
-        String lastUpdated = Utilies.getLastUpdated(mContext);
-        Log.d(TAG, "onDataSetChanged: Last updated date: "+ lastUpdated);
-                
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        long lastSyncMillis = sp.getLong("lastSync", 0);
+        String lastSyncDateTime = Utilites.millisToDateTime(lastSyncMillis);
+        Log.d(TAG, "onDataSetChanged: Last updated date: "+ lastSyncDateTime);
+
+
         Uri scoresForTodayUri = DatabaseContract.ScoresEntry.buildScoreWithDateToday();
         RemoteViews views = new RemoteViews(mContext.getPackageName(), R.layout.widget_list);
-        views.setTextViewText(R.id.last_updated, "Last Updated: "+ lastUpdated);
+        views.setTextViewText(R.id.last_updated, "Last Updated: "+ lastSyncDateTime);
         mData = mContext.getContentResolver().query(scoresForTodayUri, null, null, null, null);
         Log.d(LOG_TAG, "Got this many rows from DB: " + mData.getCount());
         Binder.restoreCallingIdentity(identityToken);

@@ -7,12 +7,14 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -31,6 +33,7 @@ import java.util.TimeZone;
 import java.util.Vector;
 
 import barqsoft.footballscores.R;
+import barqsoft.footballscores.Utilites;
 import barqsoft.footballscores.data.DatabaseContract;
 
 /**
@@ -57,24 +60,26 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
     //network code goes heeeere
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
-        Log.d(LOG_TAG, "onPerformSync");
-        //protect the api, don't sync more frequently than 5 minutes at a time.
-        long currentTimeMinutes = System.currentTimeMillis() / 1000 / 60;
-        SharedPreferences sp = getContext().getSharedPreferences("lastSync", Context.MODE_PRIVATE);
 
+        //protect the api, don't sync more frequently than 5 minutes at a time.
+        long currentTimeMillis = System.currentTimeMillis();
+
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getContext());
+        SharedPreferences.Editor editor = sp.edit();
         long lastSyncMinutes = sp.getLong("lastSync", 0);
 
         //if (lastSyncMinutes == 0 || lastSyncMinutes < (currentTimeMinutes - 5)) {
-            Log.d(LOG_TAG, "doing sync." + lastSyncMinutes + " and current time is " + currentTimeMinutes);
+            Log.d(LOG_TAG, "doing sync." + lastSyncMinutes + " and current time is " + currentTimeMillis + "Authority:"+authority);
             getData("n2");
             getData("p2");
         /*} else {
             Log.d(LOG_TAG, "Skipping Sync: Last sync was " + lastSyncMinutes + " and current time is " + currentTimeMinutes);
         }*/
 
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putLong("lastSync", currentTimeMinutes);
+        editor.putLong(Utilites.LAST_UPDATED, currentTimeMillis);
         editor.commit();
+
+        Log.d(LOG_TAG, "onPerformSync: "+currentTimeMillis);
 
     }
 
@@ -154,6 +159,14 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());
         }
+    }
+
+    private void updateWidgets() {
+        Context context = getContext();
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                .setPackage(context.getPackageName());
+        context.sendBroadcast(dataUpdatedIntent);
     }
 
     private void processJSONdata(String JSONdata, Context context, boolean isReal) {
@@ -270,20 +283,20 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
                     match_values.put(DatabaseContract.ScoresEntry.MATCH_DAY, match_day);
                     //log spam
 
-                    Log.v(LOG_TAG, match_id);
-                    Log.v(LOG_TAG, mDate);
-                    Log.v(LOG_TAG, mTime);
-                    Log.v(LOG_TAG, Home);
-                    Log.v(LOG_TAG, Away);
-                    Log.v(LOG_TAG, Home_goals);
-                    Log.v(LOG_TAG, Away_goals);
+//                    Log.v(LOG_TAG, match_id);
+//                    Log.v(LOG_TAG, mDate);
+//                    Log.v(LOG_TAG, mTime);
+//                    Log.v(LOG_TAG, Home);
+//                    Log.v(LOG_TAG, Away);
+//                    Log.v(LOG_TAG, Home_goals);
+//                    Log.v(LOG_TAG, Away_goals);
 
                     values.add(match_values);
                 }
             }
 
             saveScores(values, context);
-
+            updateWidgets();
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage());
         }
@@ -346,6 +359,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
          * If successful, return the Account object, otherwise report an error.
          */
             if (!accountManager.addAccountExplicitly(newAccount, "", null)) {
+                Log.e(LOG_TAG, "getSyncAccount: Error adding account");
                 return null;
             }
             /*
@@ -356,6 +370,8 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
              */
 
             onAccountCreated(newAccount, context);
+        } else {
+            Log.e(LOG_TAG, "getSyncAccount: Account already exists.");
         }
         return newAccount;
     }
@@ -379,9 +395,11 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
      * Helper method to schedule the sync adapter periodic execution
      */
     public static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
+        Log.e(LOG_TAG, "configurePeriodicSync() called with: " + " syncInterval = [" + syncInterval + "], flexTime = [" + flexTime + "]");
         Account account = getSyncAccount(context);
         String authority = context.getString(R.string.content_authority);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
             // we can enable inexact timers in our periodic sync
             SyncRequest request = new SyncRequest.Builder().
                     syncPeriodic(syncInterval, flexTime).
@@ -392,6 +410,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
             ContentResolver.addPeriodicSync(account,
                     authority, new Bundle(), syncInterval);
         }
+
     }
 
     private static void onAccountCreated(Account newAccount, Context context) {
@@ -412,6 +431,20 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     public static void initializeSyncAdapter(Context context) {
+
+        Log.d(LOG_TAG, "initializeSyncAdapter() called ");
         getSyncAccount(context);
+        Utilites.logSyncs(context);
+
+        AccountManager am = AccountManager.get(context);
+        Account account = am.getAccountsByType(context.getString(R.string.sync_account_type))[0];
+        boolean isYourAccountSyncEnabled = ContentResolver.getSyncAutomatically(account, context.getString(R.string.content_authority));
+        boolean isMasterSyncEnabled = ContentResolver.getMasterSyncAutomatically();
+
+        if(isMasterSyncEnabled) Log.d(LOG_TAG, "Master Sync enabled");
+        else Log.d(LOG_TAG, "Master Sync disabled");
+
+        if(isYourAccountSyncEnabled)Log.d(LOG_TAG, "My app Sync enabled");
+        else Log.d(LOG_TAG, "My App Sync disabled");
     }
 }

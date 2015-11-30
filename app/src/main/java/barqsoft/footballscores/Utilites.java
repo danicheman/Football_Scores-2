@@ -1,12 +1,22 @@
 package barqsoft.footballscores;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SyncAdapterType;
+import android.util.Log;
+
+import java.text.DateFormat;
+import java.util.Date;
 
 /**
  * Created by yehya khaled on 3/3/2015.
  */
-public class Utilies {
+public class Utilites {
+    private static final String TAG = "Utilites";
+
     public static final int SERIE_A = 401;
     public static final int PREMIER_LEGAUE = 398;
     public static final int CHAMPIONS_LEAGUE = 405;
@@ -107,12 +117,29 @@ public class Utilies {
         }
     }
 
-    public static String getLastUpdated(Context context) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(FOOTBALL_SCORES, Context.MODE_PRIVATE);
-        return sharedPreferences.getString(LAST_UPDATED, "");
-    }
-
     public static boolean isNumeric(String str) {
         return str.matches("-?\\d+(\\.\\d+)?");
+    }
+
+    public static String millisToDateTime(long millis) {
+        return DateFormat.getDateTimeInstance().format(new Date(millis));
+    }
+
+    public static void logSyncs(Context context) {
+        AccountManager acm
+                = AccountManager.get(context);
+        Account[] acct = null;
+
+        SyncAdapterType[] types = ContentResolver.getSyncAdapterTypes();
+        for (SyncAdapterType type : types) {
+            Log.d(TAG, "--------------------");
+            Log.d(TAG, "Authority: "+ type.authority + "-- Type: " + type.accountType);
+//            acct = acm.getAccountsByType(type.accountType);
+//            for (int i = 0; i < acct.length; i++) {
+//                int p = ContentResolver.getIsSyncable(acct[i], type.authority);
+//                Log.i(TAG, "account name: " + acct[i].name);
+//                Log.i(TAG, "syncable: " + String.valueOf(p));
+//            }
+        }
     }
 }

@@ -31,12 +31,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
 
     private void update_scores()
     {
-
-        ScoresSyncAdapter.syncImmediately(getActivity());
-        /*Intent service_start = new Intent(getActivity(), myFetchService.class);
-        getActivity().startService(service_start);*/
-        /*AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 5000, PendingIntent.getActivity(getActivity(), 123, service_start, 0));*/
+        getLoaderManager().restartLoader(SCORES_LOADER, null, this);
     }
     public void setFragmentDate(String date)
     {

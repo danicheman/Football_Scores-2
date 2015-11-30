@@ -7,13 +7,17 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import barqsoft.footballscores.MainActivity;
 import barqsoft.footballscores.R;
+import barqsoft.footballscores.Utilites;
 import barqsoft.footballscores.service.ScoresSyncAdapter;
 
 /**
@@ -21,8 +25,12 @@ import barqsoft.footballscores.service.ScoresSyncAdapter;
  */
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class CollectionProvider extends AppWidgetProvider {
+    private static final String TAG = "CollectionProvider";
+
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+
+
         //todo: call an intent service here..
         for (int appWidgetId : appWidgetIds) {
 
@@ -40,7 +48,13 @@ public class CollectionProvider extends AppWidgetProvider {
                 setRemoteAdapterV11(context, views);
             }
 
-            boolean useDetailActivity = context.getResources().getBoolean(R.bool.use_detail_activity);
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+            Long lastUpdated = prefs.getLong(Utilites.LAST_UPDATED, 777);
+
+            Log.d(TAG, "onUpdate: setting last updated:" + lastUpdated);
+            views.setTextViewText(R.id.last_updated, "Last updated:" + Utilites.millisToDateTime(lastUpdated));
+
             Intent clickIntentTemplate = new Intent(context, MainActivity.class);
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(clickIntentTemplate)
