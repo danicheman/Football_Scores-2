@@ -5,6 +5,12 @@
     <string translatable="false" name="sync_account_type">barqsoft.footballscores</string>
     <string translatable="false" name="content_authority">barqsoft.footballscores.service</string>
 
+    <!-- Error conditions -->
+    <string name="no_network">Network connection is not available, scores will not update.</string>
+    <string name="no_global_sync">Syncing accounts is currently disabled on your device.  Scores canot be updated.</string>
+    <string name="no_app_sync">The Sync for THIS application is currently not set up correctly. Please try re-installing.</string>
+
+
     <string name="title_widget_collection">Football Scores List</string>
 
     <string name="app_name">Football Scores</string>

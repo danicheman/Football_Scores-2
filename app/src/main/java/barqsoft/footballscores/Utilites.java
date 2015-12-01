@@ -6,7 +6,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SyncAdapterType;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -117,10 +120,11 @@ public class Utilites {
         }
     }
 
-    public static boolean isNumeric(String str) {
-        return str.matches("-?\\d+(\\.\\d+)?");
-    }
+    public static void doToast(Context context, String text) {
 
+        Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
+        toast.show();
+    }
     public static String millisToDateTime(long millis) {
         return DateFormat.getDateTimeInstance().format(new Date(millis));
     }
@@ -141,5 +145,13 @@ public class Utilites {
 //                Log.i(TAG, "syncable: " + String.valueOf(p));
 //            }
         }
+    }
+
+    //Based on a stackoverflow snippet
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
