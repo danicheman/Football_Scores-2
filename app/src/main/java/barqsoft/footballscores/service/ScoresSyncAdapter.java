@@ -69,7 +69,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
         long lastSyncMinutes = sp.getLong("lastSync", 0);
 
         //if (lastSyncMinutes == 0 || lastSyncMinutes < (currentTimeMinutes - 5)) {
-            Log.d(LOG_TAG, "doing sync." + lastSyncMinutes + " and current time is " + currentTimeMillis + "Authority:"+authority);
+            //Log.d(LOG_TAG, "doing sync." + lastSyncMinutes + " and current time is " + currentTimeMillis + "Authority:"+authority);
             getData("n2");
             getData("p2");
         /*} else {

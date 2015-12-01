@@ -50,7 +50,7 @@ public class CollectionProvider extends AppWidgetProvider {
 
 
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-            Long lastUpdated = prefs.getLong(Utilites.LAST_UPDATED, 777);
+            Long lastUpdated = prefs.getLong(Utilites.LAST_UPDATED, 777L);
 
             Log.d(TAG, "onUpdate: setting last updated:" + lastUpdated);
             views.setTextViewText(R.id.last_updated, "Last updated:" + Utilites.millisToDateTime(lastUpdated));

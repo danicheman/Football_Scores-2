@@ -25,7 +25,7 @@ import barqsoft.footballscores.data.DatabaseContract;
 public class CollectionRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private static final String LOG_TAG = CollectionRemoteViewsFactory.class.getSimpleName();
-    private static final String TAG = "CollectionRemoteViews";
+    private static final String TAG = "RemoteViewsFactory";
     private Cursor mData = null;
     private Context mContext;
 
@@ -65,7 +65,8 @@ public class CollectionRemoteViewsFactory implements RemoteViewsService.RemoteVi
         final long identityToken = Binder.clearCallingIdentity();
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        long lastSyncMillis = sp.getLong("lastSync", 0);
+
+        long lastSyncMillis = sp.getLong(Utilites.LAST_UPDATED, 0);
         String lastSyncDateTime = Utilites.millisToDateTime(lastSyncMillis);
         Log.d(TAG, "onDataSetChanged: Last updated date: "+ lastSyncDateTime);
 
@@ -76,6 +77,8 @@ public class CollectionRemoteViewsFactory implements RemoteViewsService.RemoteVi
         mData = mContext.getContentResolver().query(scoresForTodayUri, null, null, null, null);
         Log.d(LOG_TAG, "Got this many rows from DB: " + mData.getCount());
         Binder.restoreCallingIdentity(identityToken);
+
+        appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
     @Override
@@ -110,8 +113,8 @@ public class CollectionRemoteViewsFactory implements RemoteViewsService.RemoteVi
 
         //todo: Continue Here!
         //build the view for the collection widget
-        Log.e(LOG_TAG, "getting a part of the view at position " + position);
-        Log.e(LOG_TAG, "home team is : " + mData.getString(HOME_COL));
+//        Log.e(LOG_TAG, "getting a part of the view at position " + position);
+//        Log.e(LOG_TAG, "home team is : " + mData.getString(HOME_COL));
 
         Uri scoresUri = DatabaseContract.ScoresEntry.buildScoreWithDateToday();
         final Intent fillInIntent = new Intent();
