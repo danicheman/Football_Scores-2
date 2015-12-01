@@ -1,6 +1,8 @@
 package barqsoft.footballscores.widget;
 
 import android.annotation.TargetApi;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -77,8 +79,11 @@ public class CollectionRemoteViewsFactory implements RemoteViewsService.RemoteVi
         mData = mContext.getContentResolver().query(scoresForTodayUri, null, null, null, null);
         Log.d(LOG_TAG, "Got this many rows from DB: " + mData.getCount());
         Binder.restoreCallingIdentity(identityToken);
+        AppWidgetManager manager = AppWidgetManager.getInstance(mContext);
 
-        appWidgetManager.updateAppWidget(appWidgetId, views);
+        ComponentName componentName = new ComponentName(mContext, this.getClass());
+        //manager.getAppWidgetIds();
+        manager.updateAppWidget(componentName, views);
     }
 
     @Override

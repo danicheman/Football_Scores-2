@@ -73,7 +73,10 @@ public class CollectionProvider extends AppWidgetProvider {
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
                     new ComponentName(context, getClass()));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_score_list);
+            //also update the "last updated"
+            onUpdate(context,appWidgetManager,appWidgetIds);
         }
+
     }
 
     /**
