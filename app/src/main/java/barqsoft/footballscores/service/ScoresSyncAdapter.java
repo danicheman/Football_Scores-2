@@ -439,9 +439,9 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
         AccountManager am = AccountManager.get(context);
         Account account = am.getAccountsByType(context.getString(R.string.sync_account_type))[0];
         boolean isYourAccountSyncEnabled = ContentResolver.getSyncAutomatically(account, context.getString(R.string.content_authority));
-        boolean isMasterSyncEnabled = ContentResolver.getMasterSyncAutomatically();
+
         //todo: Remove these from here, do the check when the app is open or when the widget is created
-        if (!isMasterSyncEnabled) Utilites.doToast(context, context.getResources().getString(R.string.no_global_sync));
+        //if (!isMasterSyncEnabled) Utilites.doToast(context, context.getResources().getString(R.string.no_global_sync));
 
         if (!isYourAccountSyncEnabled)Utilites.doToast(context,context.getResources().getString(R.string.no_app_sync));
     }

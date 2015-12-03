@@ -7,19 +7,27 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp">
-
+        android:layout_height="56dp"
+        android:background="@color/orange01">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/widget_header"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_marginTop="10dip" />
         <TextView
             android:id="@+id/last_updated"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="last updated" />
+            android:baselineAlignBottom="true"
+            android:text="last updated"
+            android:gravity="center_horizontal|bottom" />
     </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/primary_light">
+        android:background="@color/orange10">
 
         <ListView
             android:id="@+id/widget_score_list"

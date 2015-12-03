@@ -1,5 +1,6 @@
 package barqsoft.footballscores;
 
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -29,6 +30,8 @@ public class MainActivity extends ActionBarActivity
                     .commit();
         }
 
+        if (!Utilites.isNetworkAvailable(this))Utilites.doToast(this, this.getResources().getString(R.string.no_network));
+        if (!ContentResolver.getMasterSyncAutomatically()) Utilites.doToast(this, this.getResources().getString(R.string.no_global_sync));
         ScoresSyncAdapter.initializeSyncAdapter(this);
     }
 

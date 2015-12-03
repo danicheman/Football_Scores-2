@@ -75,6 +75,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.android.support/support-v4/22.2.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.0.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/7.0.0/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/exploded-aar/uk.co.chrisjenx/calligraphy/2.1.0/jars" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/manifests" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/pre-dexed" />
@@ -94,5 +95,6 @@
     <orderEntry type="library" exported="" name="support-annotations-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-22.2.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.2.0" level="project" />
+    <orderEntry type="library" exported="" name="calligraphy-2.1.0" level="project" />
   </component>
 </module>

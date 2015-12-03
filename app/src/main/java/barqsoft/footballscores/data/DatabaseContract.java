@@ -46,7 +46,6 @@ public class DatabaseContract
             return BASE_CONTENT_URI.buildUpon().appendPath("date").build();
         }
 
-        //todo:
         public static Uri buildScoreWithDateToday() {
             long unixTime = System.currentTimeMillis() / 1000L;
             return BASE_CONTENT_URI.buildUpon().appendPath("date").appendPath(Long.toString(unixTime)).build();
