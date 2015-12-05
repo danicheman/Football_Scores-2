@@ -4,7 +4,6 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.SyncAdapterType;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -95,7 +94,7 @@ public class Utilites {
         }
         switch (teamname) { //This is the set of icons that are currently in the app. Feel free to find and add more
             //as you go.
-            case "Arsenal London FC":
+            /*case "Arsenal London FC":
                 return R.drawable.arsenal;
             case "Manchester United FC":
                 return R.drawable.manchester_united;
@@ -114,7 +113,7 @@ public class Utilites {
             case "Sunderland AFC":
                 return R.drawable.sunderland;
             case "Stoke City FC":
-                return R.drawable.stoke_city;
+                return R.drawable.stoke_city;*/
             default:
                 return R.drawable.no_icon;
         }
