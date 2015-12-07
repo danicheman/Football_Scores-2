@@ -36,12 +36,14 @@ public class CollectionRemoteViewsFactory implements RemoteViewsService.RemoteVi
     static final int DATE_COL = 1;
     static final int TIME_COL = 2;
     static final int HOME_COL = 3;
-    static final int AWAY_COL = 4;
-    static final int LEAGUE_COL = 5;
-    static final int HOME_GOALS_COL = 6;
-    static final int AWAY_GOALS_COL = 7;
-    static final int MATCH_ID = 8;
-    static final int MATCH_DAY = 9;
+    //home id
+    static final int AWAY_COL = 5;
+    //away id
+    static final int LEAGUE_COL = 7;
+    static final int HOME_GOALS_COL = 8;
+    static final int AWAY_GOALS_COL = 9;
+    static final int MATCH_ID = 10;
+    static final int MATCH_DAY = 11;
 
 
 

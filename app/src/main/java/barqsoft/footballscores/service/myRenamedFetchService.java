@@ -28,10 +28,10 @@ import barqsoft.footballscores.data.DatabaseContract;
 /**
  * Created by yehya khaled on 3/2/2015.
  */
-public class myFetchService extends IntentService
+public class myRenamedFetchService extends IntentService
 {
     public static final String LOG_TAG = "myFetchService";
-    public myFetchService()
+    public myRenamedFetchService()
     {
         super("myFetchService");
     }

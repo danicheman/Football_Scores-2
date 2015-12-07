@@ -11,11 +11,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.bumptech.glide.util.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,6 +56,11 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL / 3;
     private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
 
+    //JSON variable name constants
+    private static final String LINKS = "_links";
+    private static final String SELF = "self";
+    private static final String HREF = "href";
+
     public ScoresSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
     }
@@ -68,13 +76,9 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
         SharedPreferences.Editor editor = sp.edit();
         long lastSyncMinutes = sp.getLong("lastSync", 0);
 
-        //if (lastSyncMinutes == 0 || lastSyncMinutes < (currentTimeMinutes - 5)) {
-            //Log.d(LOG_TAG, "doing sync." + lastSyncMinutes + " and current time is " + currentTimeMillis + "Authority:"+authority);
-            getData("n2");
-            getData("p2");
-        /*} else {
-            Log.d(LOG_TAG, "Skipping Sync: Last sync was " + lastSyncMinutes + " and current time is " + currentTimeMinutes);
-        }*/
+        getData("n2");
+        getData("p2");
+
 
         editor.putLong(Utilites.LAST_UPDATED, currentTimeMillis);
         editor.commit();
@@ -85,77 +89,32 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void getData(String timeFrame) {
         //Creating fetch URL
-        final String BASE_URL = "http://api.football-data.org/alpha/fixtures"; //Base URL
+        final String BASE_URL = "http://api.football-data.org/v1/fixtures"; //Base URL
         final String QUERY_TIME_FRAME = "timeFrame"; //Time Frame parameter to determine days
         //final String QUERY_MATCH_DAY = "matchday";
 
         Uri fetch_build = Uri.parse(BASE_URL).buildUpon().
                 appendQueryParameter(QUERY_TIME_FRAME, timeFrame).build();
-        //Log.v(LOG_TAG, "The url we are looking at is: "+fetch_build.toString()); //log spam
-        HttpURLConnection m_connection = null;
-        BufferedReader reader = null;
-        String JSON_data = null;
-        //Opening Connection
-        try {
-            URL fetch = new URL(fetch_build.toString());
-            m_connection = (HttpURLConnection) fetch.openConnection();
-            m_connection.setRequestMethod("GET");
-            m_connection.addRequestProperty("X-Auth-Token", getContext().getString(R.string.api_key));
-            m_connection.connect();
 
-            // Read the input stream into a String
-            InputStream inputStream = m_connection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) {
-                // Nothing to do.
-                return;
-            }
-            reader = new BufferedReader(new InputStreamReader(inputStream));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                // But it does make debugging a *lot* easier if you print out the completed
-                // buffer for debugging.
-                buffer.append(line + "\n");
-            }
-            if (buffer.length() == 0) {
-                // Stream was empty.  No point in parsing.
-                return;
-            }
-            JSON_data = buffer.toString();
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Exception here" + e.getMessage());
-        } finally {
-            if (m_connection != null) {
-                m_connection.disconnect();
-            }
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    Log.e(LOG_TAG, "Error Closing Stream");
-                }
-            }
+        JSONObject matchData = Utilites.getJsonFromUrl(fetch_build,getContext());
+        if(matchData == null) {
+            Utilites.doToast(getContext(),getContext().getString(R.string.no_response));
+//            Log.e(LOG_TAG, "getData: No data retrieved from url!");
+            return;
         }
+
         try {
-            if (JSON_data != null) {
-                //This bit is to check if the data contains any matches. If not, we call processJson on the dummy data
-                JSONArray matches = new JSONObject(JSON_data).getJSONArray("fixtures");
-                if (matches.length() == 0) {
-                    //if there is no data, call the function on dummy data
-                    //this is expected behavior during the off season.
-                    Log.d(LOG_TAG, "Using dummy data");
-                    processJSONdata(getContext().getString(R.string.dummy_data), getContext(), false);
-                    return;
-                }
-
-
-                processJSONdata(JSON_data, getContext(), true);
+            //This bit is to check if the data contains any matches. If not, we call processJson on the dummy data
+            JSONArray matches = matchData.getJSONArray("fixtures");
+            if (matches.length() > 0) {
+                processJSONdata(matchData, getContext(), true);
             } else {
-                //Could not Connect
-                Log.d(LOG_TAG, "Could not connect to server.");
+                //if there is no data, call the function on dummy data
+                //this is expected behavior during the off season.
+                Log.d(LOG_TAG, "Using dummy data");
+                processJSONdata(new JSONObject(getContext().getString(R.string.dummy_data)), getContext(), false);
             }
+
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());
         }
@@ -169,30 +128,16 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
         context.sendBroadcast(dataUpdatedIntent);
     }
 
-    private void processJSONdata(String JSONdata, Context context, boolean isReal) {
+    private void processJSONdata(JSONObject jsonResult, Context context, boolean isReal) {
         //todo: get league from utility
-        //JSON data
-        // This set of league codes is for the 2015/2016 season. In fall of 2016, they will need to
-        // be updated. Feel free to use the codes
-        final String BUNDESLIGA1 = "394";
-        final String BUNDESLIGA2 = "395";
-        final String LIGUE1 = "396";
-        final String LIGUE2 = "397";
-        final String PREMIER_LEAGUE = "398";
-        final String PRIMERA_DIVISION = "399";
-        final String SEGUNDA_DIVISION = "400";
-        final String SERIE_A = "401";
-        final String PRIMERA_LIGA = "402";
-        final String Bundesliga3 = "403";
-        final String EREDIVISIE = "404";
 
-
-        final String SEASON_LINK = "http://api.football-data.org/alpha/soccerseasons/";
-        final String MATCH_LINK = "http://api.football-data.org/alpha/fixtures/";
+        final String MATCH_LINK = "http://api.football-data.org/v1/fixtures/";
         final String FIXTURES = "fixtures";
-        final String LINKS = "_links";
+
+        final String HOME_TEAM_LINK = "homeTeam";
+        final String AWAY_TEAM_LINK = "awayTeam";
         final String SOCCER_SEASON = "soccerseason";
-        final String SELF = "self";
+
         final String MATCH_DATE = "date";
         final String HOME_TEAM = "homeTeamName";
         final String AWAY_TEAM = "awayTeamName";
@@ -202,19 +147,24 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
         final String MATCH_DAY = "matchday";
 
         //Match data
-        String League = null;
+        String leagueLink = null;
         String mDate = null;
         String mTime = null;
         String Home = null;
+        String homeTeamLink = null;
         String Away = null;
+        String awayTeamLink = null;
         String Home_goals = null;
         String Away_goals = null;
         String match_id = null;
         String match_day = null;
 
-
+        int leagueId;
+        int awayTeamId;
+        int homeTeamId;
+        int soccerSeasonId;
         try {
-            JSONArray matches = new JSONObject(JSONdata).getJSONArray(FIXTURES);
+            JSONArray matches = jsonResult.getJSONArray(FIXTURES);
 
 
             //ContentValues to be inserted
@@ -222,18 +172,30 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
             for (int i = 0; i < matches.length(); i++) {
 
                 JSONObject match_data = matches.getJSONObject(i);
-                League = match_data.getJSONObject(LINKS).getJSONObject(SOCCER_SEASON).
+                leagueLink = match_data.getJSONObject(LINKS).getJSONObject(SOCCER_SEASON).
                         getString("href");
-                League = League.replace(SEASON_LINK, "");
+                homeTeamLink = match_data.getJSONObject(LINKS).getJSONObject(HOME_TEAM_LINK).
+                        getString("href");
+                awayTeamLink = match_data.getJSONObject(LINKS).getJSONObject(AWAY_TEAM_LINK).
+                        getString("href");
+
+
+                leagueId = Utilites.getLastUrlSegmentAsInt(leagueLink);
+                awayTeamId = Utilites.getLastUrlSegmentAsInt(homeTeamLink);
+                checkTeamOrGetLeague(awayTeamId, leagueId, context);
+
+                homeTeamId = Utilites.getLastUrlSegmentAsInt(awayTeamLink);
+                //Since it's getting the whole league, this isn't necessary.
+                //checkTeamOrGetLeague(homeTeamId, leagueId, context);
+
+
                 //This if statement controls which leagues we're interested in the data from.
                 //add leagues here in order to have them be added to the DB.
                 // If you are finding no data in the app, check that this contains all the leagues.
                 // If it doesn't, that can cause an empty DB, bypassing the dummy data routine.
-                if (League.equals(PREMIER_LEAGUE) ||
-                        League.equals(SERIE_A) ||
-                        League.equals(BUNDESLIGA1) ||
-                        League.equals(BUNDESLIGA2) ||
-                        League.equals(PRIMERA_DIVISION)) {
+                String leagueName = Utilites.getLeague(leagueId);
+                if (!leagueName.equals(Utilites.UNKNOWN_LEAGUE)) {
+
                     match_id = match_data.getJSONObject(LINKS).getJSONObject(SELF).
                             getString("href");
                     match_id = match_id.replace(MATCH_LINK, "");
@@ -276,22 +238,26 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
                     match_values.put(DatabaseContract.ScoresEntry.DATE_COL, mDate);
                     match_values.put(DatabaseContract.ScoresEntry.TIME_COL, mTime);
                     match_values.put(DatabaseContract.ScoresEntry.HOME_COL, Home);
+                    match_values.put(DatabaseContract.ScoresEntry.HOME_ID_COL, homeTeamId);
                     match_values.put(DatabaseContract.ScoresEntry.AWAY_COL, Away);
+                    match_values.put(DatabaseContract.ScoresEntry.AWAY_ID_COL, awayTeamId);
                     match_values.put(DatabaseContract.ScoresEntry.HOME_GOALS_COL, Home_goals);
                     match_values.put(DatabaseContract.ScoresEntry.AWAY_GOALS_COL, Away_goals);
-                    match_values.put(DatabaseContract.ScoresEntry.LEAGUE_COL, League);
+                    match_values.put(DatabaseContract.ScoresEntry.LEAGUE_COL, leagueName);
                     match_values.put(DatabaseContract.ScoresEntry.MATCH_DAY, match_day);
                     //log spam
 
 //                    Log.v(LOG_TAG, match_id);
 //                    Log.v(LOG_TAG, mDate);
 //                    Log.v(LOG_TAG, mTime);
-//                    Log.v(LOG_TAG, Home);
-//                    Log.v(LOG_TAG, Away);
+                    Log.v(LOG_TAG, "Home:" + Home);
+                    Log.v(LOG_TAG, "Away:" + Away);
 //                    Log.v(LOG_TAG, Home_goals);
 //                    Log.v(LOG_TAG, Away_goals);
 
                     values.add(match_values);
+                } else {
+                    Log.e(LOG_TAG, "!!Unknown League with id: "+ leagueId);
                 }
             }
 
@@ -318,13 +284,8 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
         scores.toArray(insert_data);
         Log.v(LOG_TAG, "should be adding this many rows: " + scores.size());
         insertedRowCount = context.getContentResolver().bulkInsert(
-                DatabaseContract.BASE_CONTENT_URI, insert_data);
-        Log.v(LOG_TAG, "Succesfully Inserted : " + insertedRowCount);
-
+                DatabaseContract.ScoresEntry.CONTENT_URI, insert_data);
         if(insert_data.length > 0) {
-
-            insertedRowCount = context.getContentResolver().bulkInsert(
-                    DatabaseContract.BASE_CONTENT_URI, insert_data);
             Log.v(LOG_TAG, "Succesfully Inserted : " + insertedRowCount);
 
         } else {
@@ -395,7 +356,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
      * Helper method to schedule the sync adapter periodic execution
      */
     public static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
-        Log.e(LOG_TAG, "configurePeriodicSync() called with: " + " syncInterval = [" + syncInterval + "], flexTime = [" + flexTime + "]");
+//        Log.e(LOG_TAG, "configurePeriodicSync() called with: " + " syncInterval = [" + syncInterval + "], flexTime = [" + flexTime + "]");
         Account account = getSyncAccount(context);
         String authority = context.getString(R.string.content_authority);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -434,7 +395,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
         getSyncAccount(context);
-        Utilites.logSyncs(context);
+        //Utilites.logSyncs(context);
 
         AccountManager am = AccountManager.get(context);
         Account account = am.getAccountsByType(context.getString(R.string.sync_account_type))[0];
@@ -445,4 +406,102 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
 
         if (!isYourAccountSyncEnabled)Utilites.doToast(context,context.getResources().getString(R.string.no_app_sync));
     }
+
+    /**
+     * Download league data from API to the Database
+     *
+     * @param leagueId
+     * @param context
+     */
+    private void getLeagueData(int leagueId, Context context) {
+
+        String leagueLink = "http://api.football-data.org/v1/soccerseasons/"+leagueId+"/teams";
+        JSONObject result = Utilites.getJsonFromUrl(Uri.parse(leagueLink),context);
+
+        if(result != null) {
+
+            String dataTeamName = "name";
+            String dataShortTeamName = "shortName";
+            String dataCrestUrl = "crestUrl";
+
+            //get data to save
+            try {
+                JSONArray teams = result.getJSONArray("teams");
+                Log.i(LOG_TAG, "getTeamData: Saving "+teams.length()+" teams for league "+leagueId);
+                Vector<ContentValues> values = new Vector<ContentValues>(teams.length());
+
+                for (int i = 0; i < teams.length(); i++ ) {
+                    JSONObject team = teams.getJSONObject(i);
+                    String teamLink = team.getJSONObject(LINKS).getJSONObject(SELF).getString(HREF);
+                    int teamId = Utilites.getLastUrlSegmentAsInt(teamLink);
+
+                    //save data
+                    ContentValues cv = new ContentValues();
+                    cv.put(DatabaseContract.TeamsEntry._ID, teamId);
+                    cv.put(DatabaseContract.TeamsEntry.NAME_COL, team.getString(dataTeamName));
+                    cv.put(DatabaseContract.TeamsEntry.SHORT_NAME_COL, team.getString(dataShortTeamName));
+                    cv.put(DatabaseContract.TeamsEntry.CREST_URL_COL, team.getString(dataCrestUrl));
+                    values.add(cv);
+                }
+
+                ContentValues[] insert_data = new ContentValues[values.size()];
+                values.toArray(insert_data);
+
+                int insertedRowCount = context.getContentResolver().bulkInsert(
+                DatabaseContract.TeamsEntry.CONTENT_URI, insert_data);
+                Log.d(LOG_TAG, "getLeagueData: saved "+insertedRowCount+" rows.");
+            } catch (JSONException je) {
+                Log.e(LOG_TAG, "getTeamData: "+je.getMessage());
+            }
+
+        } else Log.d(LOG_TAG, "getLeagueData: Result is null!");
+    }
+
+    private static void saveTeamData(int teamId, JSONObject data, Context context) {
+        String dataTeamName = "name";
+        String dataShortTeamName = "shortName";
+        String dataCrestUrl = "crestUrl";
+        try {
+            Log.d(LOG_TAG, "saveTeamData: saving a team.");
+            //save data
+            ContentValues cv = new ContentValues(4);
+            cv.put(DatabaseContract.TeamsEntry._ID, teamId);
+            cv.put(DatabaseContract.TeamsEntry.NAME_COL, data.getString(dataTeamName));
+            cv.put(DatabaseContract.TeamsEntry.SHORT_NAME_COL, data.getString(dataShortTeamName));
+            cv.put(DatabaseContract.TeamsEntry.CREST_URL_COL, data.getString(dataCrestUrl));
+
+            context.getContentResolver().insert(DatabaseContract.TeamsEntry.CONTENT_URI,cv);
+            Log.d(LOG_TAG, "saveTeamData: saved a team. Yay");
+
+        } catch (JSONException je) {
+            Log.e(LOG_TAG, "processTeamData - Exception : "+je.getMessage() );
+        }
+
+    }
+    /**
+     * Check or get team
+     * @param teamId
+     * @param context
+     */
+    private void checkTeamOrGetLeague(int teamId, int leagueId, Context context) {
+
+        String[] selection = {DatabaseContract.TeamsEntry._ID};
+        String[] selectionArgs = {Integer.toString(teamId)};
+
+        String selectionClause = DatabaseContract.TeamsEntry._ID + " = ?";
+
+        Cursor result = context.getContentResolver().query(
+                DatabaseContract.TeamsEntry.CONTENT_URI,
+                selection,
+                selectionClause,
+                selectionArgs,
+                null );
+
+        if (!result.moveToFirst()) {
+            getLeagueData(leagueId, context);
+        }
+
+        result.close();
+    }
+
 }
