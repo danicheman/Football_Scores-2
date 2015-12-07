@@ -17,16 +17,18 @@ import barqsoft.footballscores.svg.GlideSvgLoader;
  */
 public class scoresAdapter extends CursorAdapter
 {
-    public static final int COL_HOME = 3;
-    public static final int COL_AWAY = 4;
-    public static final int COL_HOME_GOALS = 9;
-    public static final int COL_AWAY_GOALS = 10;
-    public static final int COL_DATE = 1;
-    public static final int COL_LEAGUE = 5;
-    public static final int COL_MATCHDAY = 11;
-    public static final int COL_ID = 10;
-    public static final int COL_MATCHTIME = 2;
     public double detail_match_id = 0;
+    //public static final int COL_DATE = 1;
+    public static final int COL_MATCHTIME = 2;
+    public static final int COL_HOME = 3;
+    public static final int COL_AWAY = 5;
+    public static final int COL_LEAGUE = 7;
+    public static final int COL_HOME_GOALS = 8;
+    public static final int COL_AWAY_GOALS = 9;
+    public static final int COL_ID = 10;
+    public static final int COL_MATCHDAY = 11;
+
+
     private String FOOTBALL_SCORES_HASHTAG = "#Football_Scores";
     private GlideSvgLoader svgLoader;
     public scoresAdapter(Context context,Cursor cursor,int flags)

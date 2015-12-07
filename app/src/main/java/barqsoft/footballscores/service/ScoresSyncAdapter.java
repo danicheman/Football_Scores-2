@@ -91,7 +91,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
         //Creating fetch URL
         final String BASE_URL = "http://api.football-data.org/v1/fixtures"; //Base URL
         final String QUERY_TIME_FRAME = "timeFrame"; //Time Frame parameter to determine days
-        //final String QUERY_MATCH_DAY = "matchday";
+
 
         Uri fetch_build = Uri.parse(BASE_URL).buildUpon().
                 appendQueryParameter(QUERY_TIME_FRAME, timeFrame).build();
