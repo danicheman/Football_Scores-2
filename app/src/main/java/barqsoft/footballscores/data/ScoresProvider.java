@@ -130,8 +130,8 @@ public class ScoresProvider extends ContentProvider
 
                 String JOIN_QUERY = "SELECT scoresEntry.*, home.crest_url as home_crest, away.crest_url as away_crest  " +
                         "               FROM scoresEntry "+
-                                        "INNER JOIN teamsEntry AS home ON home._id = scoresEntry.home_id " +
-                                        "INNER JOIN teamsEntry AS away ON away._id = scoresEntry.away_id " +
+                                        "LEFT JOIN teamsEntry AS home ON home._id = scoresEntry.home_id " +
+                                        "LEFT JOIN teamsEntry AS away ON away._id = scoresEntry.away_id " +
                                         "WHERE date = \""+selectionArgs[0]+"\"";
 
 

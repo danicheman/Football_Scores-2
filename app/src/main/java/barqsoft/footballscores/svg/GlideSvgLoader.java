@@ -37,7 +37,7 @@ public class GlideSvgLoader {
                 .cacheDecoder(new FileToStreamDecoder<SVG>(new SvgDecoder()))
                 .decoder(new SvgDecoder())
                 .placeholder(R.drawable.ic_launcher)
-                //.error(R.drawable.image_error) todo:get or create error image
+                .error(R.drawable.no_icon)
                 .animate(android.R.anim.fade_in)
                 .listener(new SvgSoftwareLayerSetter<Uri>())
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE);

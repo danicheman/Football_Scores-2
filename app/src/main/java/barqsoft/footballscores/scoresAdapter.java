@@ -3,20 +3,35 @@ package barqsoft.footballscores;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.PictureDrawable;
+import android.net.Uri;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.StreamEncoder;
+import com.bumptech.glide.load.resource.file.FileToStreamDecoder;
+import com.caverock.androidsvg.SVG;
+
+import java.io.InputStream;
+
 import barqsoft.footballscores.svg.GlideSvgLoader;
+import barqsoft.footballscores.svg.SvgDecoder;
+import barqsoft.footballscores.svg.SvgDrawableTranscoder;
+import barqsoft.footballscores.svg.SvgSoftwareLayerSetter;
 
 /**
  * Created by yehya khaled on 2/26/2015.
  */
 public class scoresAdapter extends CursorAdapter
 {
+    private static final String TAG = "scoresAdapter";
     public double detail_match_id = 0;
     //public static final int COL_DATE = 1;
     public static final int COL_MATCHTIME = 2;
@@ -27,14 +42,15 @@ public class scoresAdapter extends CursorAdapter
     public static final int COL_AWAY_GOALS = 9;
     public static final int COL_ID = 10;
     public static final int COL_MATCHDAY = 11;
-
+    public static final int COL_HOME_LOGO = 12;
+    public static final int COL_AWAY_LOGO = 13;
 
     private String FOOTBALL_SCORES_HASHTAG = "#Football_Scores";
-    private GlideSvgLoader svgLoader;
+    private GlideSvgLoader mSvgLoader;
     public scoresAdapter(Context context,Cursor cursor,int flags)
     {
-
         super(context,cursor,flags);
+        mSvgLoader = new GlideSvgLoader(context);
     }
 
     @Override
@@ -56,11 +72,10 @@ public class scoresAdapter extends CursorAdapter
         mHolder.date.setText(cursor.getString(COL_MATCHTIME));
         mHolder.score.setText(Utilites.getScores(cursor.getInt(COL_HOME_GOALS), cursor.getInt(COL_AWAY_GOALS)));
         mHolder.match_id = cursor.getDouble(COL_ID);
-        mHolder.home_crest.setImageResource(Utilites.getTeamCrestByTeamName(
-                cursor.getString(COL_HOME)));
-        mHolder.away_crest.setImageResource(Utilites.getTeamCrestByTeamName(
-                cursor.getString(COL_AWAY)
-        ));
+
+
+        mSvgLoader.loadNetSvgIntoImageView(Uri.parse(cursor.getString(COL_HOME_LOGO)), mHolder.home_crest);
+        mSvgLoader.loadNetSvgIntoImageView(Uri.parse(cursor.getString(COL_AWAY_LOGO)), mHolder.away_crest);
         //Log.v(FetchScoreTask.LOG_TAG,mHolder.home_name.getText() + " Vs. " + mHolder.away_name.getText() +" id " + String.valueOf(mHolder.match_id));
         //Log.v(FetchScoreTask.LOG_TAG,String.valueOf(detail_match_id));
         LayoutInflater vi = (LayoutInflater) context.getApplicationContext()

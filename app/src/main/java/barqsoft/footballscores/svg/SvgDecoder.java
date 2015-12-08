@@ -11,12 +11,8 @@ import java.io.InputStream;
 
 /**
  * Decodes an SVG internal representation from an {@link InputStream}.
- *
- * https://github.com/bumptech/glide/blob/v3.6.1/samples/svg/src/main/java/com/bumptech/glide/samples/svg/SvgDecoder.java
  */
 public class SvgDecoder implements ResourceDecoder<InputStream, SVG> {
-
-    @Override
     public Resource<SVG> decode(InputStream source, int width, int height) throws IOException {
         try {
             SVG svg = SVG.getFromInputStream(source);
