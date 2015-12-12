@@ -73,13 +73,10 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
     {
         //Log.v(FetchScoreTask.LOG_TAG,"loader finished");
         //cursor.moveToFirst();
-        /*
         while (!cursor.isAfterLast())
         {
-            Log.v(FetchScoreTask.LOG_TAG,cursor.getString(1));
             cursor.moveToNext();
         }
-        */
 
         int i = 0;
         cursor.moveToFirst();
@@ -90,7 +87,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         }
         //Log.v(FetchScoreTask.LOG_TAG,"Loader query: " + String.valueOf(i));
         mAdapter.swapCursor(cursor);
-        //mAdapter.notifyDataSetChanged();
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override

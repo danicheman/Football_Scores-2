@@ -3,35 +3,22 @@ package barqsoft.footballscores;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.drawable.PictureDrawable;
 import android.net.Uri;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.StreamEncoder;
-import com.bumptech.glide.load.resource.file.FileToStreamDecoder;
-import com.caverock.androidsvg.SVG;
-
-import java.io.InputStream;
 
 import barqsoft.footballscores.svg.GlideSvgLoader;
-import barqsoft.footballscores.svg.SvgDecoder;
-import barqsoft.footballscores.svg.SvgDrawableTranscoder;
-import barqsoft.footballscores.svg.SvgSoftwareLayerSetter;
 
 /**
  * Created by yehya khaled on 2/26/2015.
  */
 public class scoresAdapter extends CursorAdapter
 {
-    private static final String TAG = "scoresAdapter";
     public double detail_match_id = 0;
     //public static final int COL_DATE = 1;
     public static final int COL_MATCHTIME = 2;
@@ -59,7 +46,6 @@ public class scoresAdapter extends CursorAdapter
         View mItem = LayoutInflater.from(context).inflate(R.layout.scores_list_item, parent, false);
         ViewHolder mHolder = new ViewHolder(mItem);
         mItem.setTag(mHolder);
-        //Log.v(FetchScoreTask.LOG_TAG,"new View inflated");
         return mItem;
     }
 
@@ -76,8 +62,8 @@ public class scoresAdapter extends CursorAdapter
 
         mSvgLoader.loadNetSvgIntoImageView(Uri.parse(cursor.getString(COL_HOME_LOGO)), mHolder.home_crest);
         mSvgLoader.loadNetSvgIntoImageView(Uri.parse(cursor.getString(COL_AWAY_LOGO)), mHolder.away_crest);
-        //Log.v(FetchScoreTask.LOG_TAG,mHolder.home_name.getText() + " Vs. " + mHolder.away_name.getText() +" id " + String.valueOf(mHolder.match_id));
-        //Log.v(FetchScoreTask.LOG_TAG,String.valueOf(detail_match_id));
+
+
         LayoutInflater vi = (LayoutInflater) context.getApplicationContext()
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = vi.inflate(R.layout.detail_fragment, null);
@@ -94,6 +80,16 @@ public class scoresAdapter extends CursorAdapter
             TextView league = (TextView) v.findViewById(R.id.league_textview);
             league.setText(Utilites.getLeague(cursor.getInt(COL_LEAGUE)));
             Button share_button = (Button) v.findViewById(R.id.share_button);
+            share_button.setContentDescription(String.format(
+                    context.getResources().getString(
+                            R.string.share_button_description),
+                            cursor.getString(COL_HOME),
+                            cursor.getString(COL_AWAY),
+                            cursor.getString(COL_MATCHDAY),
+                            cursor.getInt(COL_HOME_GOALS),
+                            cursor.getInt(COL_AWAY_GOALS)
+                    )
+            );
             share_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v)
