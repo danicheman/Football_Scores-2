@@ -28,7 +28,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="@dimen/detail_fragment_top_margin">
         <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,8 +37,12 @@
         android:text="@string/share_text"
         android:id="@+id/share_button"
         android:drawableLeft="@android:drawable/ic_menu_share"
-        android:paddingLeft="120dp"
-        android:paddingRight="120dp"/>
+        android:drawableStart="@android:drawable/ic_menu_share"
+        android:paddingLeft="@dimen/detail_fragment_horizontal_padding"
+        android:paddingRight="@dimen/detail_fragment_horizontal_padding"
+        android:paddingStart="@dimen/detail_fragment_horizontal_padding"
+        android:paddingEnd="@dimen/detail_fragment_horizontal_padding"/>
+        />
     </FrameLayout>
 
 </LinearLayout>

@@ -18,18 +18,10 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.bumptech.glide.util.Util;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -80,7 +72,7 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
         getData("p2");
 
 
-        editor.putLong(Utilites.LAST_UPDATED, currentTimeMillis);
+        editor.putLong(Utilites.PREF_KEY_LAST_UPDATED, currentTimeMillis);
         editor.commit();
 
         Log.d(LOG_TAG, "onPerformSync: "+currentTimeMillis);
@@ -193,8 +185,10 @@ public class ScoresSyncAdapter extends AbstractThreadedSyncAdapter {
                 //add leagues here in order to have them be added to the DB.
                 // If you are finding no data in the app, check that this contains all the leagues.
                 // If it doesn't, that can cause an empty DB, bypassing the dummy data routine.
-                String leagueName = Utilites.getLeague(leagueId);
-                if (!leagueName.equals(Utilites.UNKNOWN_LEAGUE)) {
+                String leagueName = Utilites.getLeague(leagueId,context);
+
+                //if the league name is not unknown..
+                if (!leagueName.equals(context.getString(R.string.unknown))) {
 
                     match_id = match_data.getJSONObject(LINKS).getJSONObject(SELF).
                             getString("href");

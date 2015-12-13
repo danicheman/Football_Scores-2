@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string translatable="false" name="api_key"></string>
+    <string translatable="false" name="api_key">02371e7da15741e280d1f761cf285de8</string>
 
     <!-- SyncAdapter variables -->
     <string translatable="false" name="sync_account_type">barqsoft.footballscores</string>
@@ -30,11 +30,31 @@
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
     <string name="tomorrow">Tomorrow</string>
+
+    <!-- Football Leagues -->
     <string name="champions_league">UEFA Champions League</string>
     <string name="bundesliga">Bundesliga</string>
     <string name="premierleague">Premier League</string>
     <string name="primeradivison">Primera Division</string>
     <string name="seriaa">Serie A</string>
+    <string name="primeirea">Primeira Liga</string>
+    <string name="bundesliga1">Bundesliga 1</string>
+    <string name="bundesliga2">Bundesliga 2</string>
+    <string name="bundesliga3">Bundesliga 3</string>
+    <string name="ligue1">Ligue 1</string>
+    <string name="ligue2">Ligue 2</string>
+    <string name="segunda">Segunda Division</string>
+    <string name="eredivisie">Eredivisie</string>
+    <string name="unknown">Unknown League</string>
+
+    <!-- Match Day -->
+    <string name="md_regular">Matchday : </string>
+    <string name="md_group">Group Stages, Matchday : 6</string>
+    <string name="md_knockout">First Knockout round</string>
+    <string name="md_quarter">QuarterFinal</string>
+    <string name="md_semi">SemiFinal</string>
+    <string name="md_final">Final</string>
+
     <string name="matchday_text">Match day</string>
     <string name="group_stage_text">Group stages</string>
     <string name="first_knockout_round">First knockout round</string>
@@ -48,7 +68,7 @@
         This Application get Football Matches Score for the Premier League,Seria A,Bundesliga,Primera Division
         and the Uefa Champions League.
         All Matches data are acquired from football-data.org free API.
-        All team Logos are acquired from http://hdlogo.wordpress.com/ upon requesting permission form the owner.
+        All team Logos are acquired from the wikipedia link provided in the api.
         The original version of this app was created by Yahia Khalid Ibn El Walid Ahmed, and a modified version is given to students in the Udacity Android Nanodegree program.
         To report any bugs,or suggestions do not hesitate to send a mail to y.k.ibnelwalid@gmail.com.
 

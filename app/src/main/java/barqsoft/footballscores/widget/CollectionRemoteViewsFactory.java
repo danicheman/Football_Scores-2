@@ -70,7 +70,7 @@ public class CollectionRemoteViewsFactory implements RemoteViewsService.RemoteVi
 
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        long lastSyncMillis = sp.getLong(Utilites.LAST_UPDATED, 0);
+        long lastSyncMillis = sp.getLong(Utilites.PREF_KEY_LAST_UPDATED, 0);
         String lastSyncDateTime = Utilites.millisToDateTime(lastSyncMillis);
         Log.d(TAG, "onDataSetChanged: Last updated date: "+ lastSyncDateTime);
 

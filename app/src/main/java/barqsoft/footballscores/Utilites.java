@@ -43,56 +43,55 @@ public class Utilites {
     public static final int SEGUNDA = 400;
     public static final int PRIMEIRA_LIGA = 402;
     public static final int EREDIVISIE = 404;
-    public static final String FOOTBALL_SCORES = "footballScores";
-    public static final String LAST_UPDATED = "scoreLastUpdated";
-    public static final String UNKNOWN_LEAGUE = "unknown";
+    public static final String PREF_KEY_LAST_UPDATED = "scoreLastUpdated";
 
-    public static String getLeague(int league_num) {
+
+    public static String getLeague(int league_num, Context c) {
         switch (league_num) {
             case SERIE_A:
-                return "Seria A";
+                return c.getString(R.string.seriaa);
             case PREMIER_LEGAUE:
-                return "Premier League";
+                return c.getString(R.string.premierleague);
             case CHAMPIONS_LEAGUE:
-                return "UEFA Champions League";
+                return c.getString(R.string.champions_league);
             case PRIMERA_DIVISION:
-                return "Primera Division";
+                return c.getString(R.string.primeradivison);
             case PRIMEIRA_LIGA:
-                return "Primeira Liga";
+                return c.getString(R.string.primeirea);
             case BUNDESLIGA1:
-                return "Bundesliga 1";
+                return c.getString(R.string.bundesliga1);
             case BUNDESLIGA2:
-                return "Bundesliga 2";
+                return c.getString(R.string.bundesliga2);
             case BUNDESLIGA3:
-                return "Bundesliga 3";
+                return c.getString(R.string.bundesliga3);
             case LIGUE1:
-                return "Ligue 1";
+                return c.getString(R.string.ligue1);
             case LIGUE2:
-                return "Ligue 2";
+                return c.getString(R.string.ligue2);
             case SEGUNDA:
-                return "Segunda Division";
+                return c.getString(R.string.segunda);
             case EREDIVISIE:
-                return "Eredivisie";
+                return c.getString(R.string.eredivisie);
             default:
-                return UNKNOWN_LEAGUE;
+                return c.getString(R.string.unknown);
         }
     }
 
-    public static String getMatchDay(int match_day, int league_num) {
+    public static String getMatchDay(int match_day, int league_num, Context c) {
         if (league_num == CHAMPIONS_LEAGUE) {
             if (match_day <= 6) {
-                return "Group Stages, Matchday : 6";
+                return c.getString(R.string.md_group);
             } else if (match_day == 7 || match_day == 8) {
-                return "First Knockout round";
+                return c.getString(R.string.md_knockout);
             } else if (match_day == 9 || match_day == 10) {
-                return "QuarterFinal";
+                return c.getString(R.string.md_quarter);
             } else if (match_day == 11 || match_day == 12) {
-                return "SemiFinal";
+                return c.getString(R.string.md_semi);
             } else {
-                return "Final";
+                return c.getString(R.string.md_final);
             }
         } else {
-            return "Matchday : " + String.valueOf(match_day);
+            return c.getString(R.string.md_regular)+ String.valueOf(match_day);
         }
     }
 
@@ -113,24 +112,6 @@ public class Utilites {
         return DateFormat.getDateTimeInstance().format(new Date(millis));
     }
 
-    public static void logSyncs(Context context) {
-        AccountManager acm
-                = AccountManager.get(context);
-        Account[] acct = null;
-
-        SyncAdapterType[] types = ContentResolver.getSyncAdapterTypes();
-        for (SyncAdapterType type : types) {
-            Log.d(TAG, "--------------------");
-            Log.d(TAG, "Authority: "+ type.authority + "-- Type: " + type.accountType);
-//            acct = acm.getAccountsByType(type.accountType);
-//            for (int i = 0; i < acct.length; i++) {
-//                int p = ContentResolver.getIsSyncable(acct[i], type.authority);
-//                Log.i(TAG, "account name: " + acct[i].name);
-//                Log.i(TAG, "syncable: " + String.valueOf(p));
-//            }
-        }
-    }
-
     //Based on a stackoverflow snippet
     public static boolean isNetworkAvailable(Context context) {
         ConnectivityManager connectivityManager
@@ -146,7 +127,7 @@ public class Utilites {
 
     public static JSONObject getJsonFromUrl(Uri uri, Context context) {
         
-        Log.v(TAG, "The url we are looking at is: "+uri.toString()); //log spam
+//        Log.v(TAG, "The url we are looking at is: "+uri.toString()); //log spam
         HttpURLConnection m_connection = null;
         BufferedReader reader = null;
         String jsonData = null;
